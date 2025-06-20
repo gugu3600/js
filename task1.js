@@ -1,5 +1,16 @@
 const a = "\n";
 let store = 0;
+
+function random(){
+
+    let num = Math.floor(Math.random()*10);
+
+    return num <= 4 ? 5 : num; 
+
+}
+
+let ran = random();
+
 function star1(count) {
 
     for (let i = 0; i <= count; i++) {
@@ -13,7 +24,7 @@ function star1(count) {
     }
 }
 
-star1(5);
+star1(ran);
 console.log(a)
 
 function star2(len){
@@ -36,7 +47,7 @@ function star2(len){
     }
 }
 
-star2(5);
+star2(ran);
 console.log(a)
 
 
@@ -55,7 +66,7 @@ function star3(len){
     }
 }
 
-star3(5);
+star3(ran);
 console.log(a);
 
 
@@ -80,7 +91,7 @@ function start4(len){
     }
 }
 
-start4(5);
+start4(ran);
 console.log(a);
 
 
@@ -124,4 +135,4 @@ function start5(len){
 
 }
 
-start5(5)
+start5(ran)
