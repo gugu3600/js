@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Game</title>
+</head>
+
+<body>
+
+
+
+    <script>
+        const a = (msg) => window.prompt(msg);
+        const b = (warn) => window.alert(warn);
+        const game = {
+            levels: [
+                {
+                    id: 1,
+                    room: "Entrance Hall",
+                    requirement: ["Map"],
+                    claim: "Map",
+                    access: true,
+                    directions: [
+                        { name: "right", value: 1 },
+                        { name: null, value: null }
+                    ]
+                },
+
+                {
+                    id: 2,
+                    room: "Dining Room",
+                    requirement: ["Map"],
+                    claim: "SilverKey",
+                    access: false,
+                    directions: [
+                        { name: "right", value: 1 },
+                        { name: "left", value: -1 },
+                    ]
+                },
+
+                {
+                    id: 3,
+                    room: "Kitchen Room",
+                    requirement: ["Map"],
+                    claim: "Portion",
+                    access: false,
+                    directions: [
+                        { name: "down", value: 1 },
+                        { name: "left", value: -1 },
+                    ]
+                },
+
+                {
+                    id: 4,
+                    room: "Study Room",
+                    requirement: ["Map"],
+                    claim: null,
+                    access: false,
+                    directions: [
+                        { name: "up", value: -1 },
+                        { name: "left", value: 1 },
+                    ]
+                },
+
+                {
+                    id: 5,
+                    room: "Living Room",
+                    requirement: ["Map"],
+                    claim: "Torch",
+                    access: false,
+                    directions: [
+                        { name: "left", value: 1 },
+                        { name: "right", value: -1 },
+                    ]
+                },
+
+                {
+                    id: 6,
+                    room: "Library",
+                    requirement: ["Map"],
+                    claim: null,
+                    access: false,
+                    directions: [
+                        { name: "down", value: 1 },
+                        { name: "right", value: -1 },
+                    ]
+                },
+
+                {
+                    id: 7,
+                    room: "Garden",
+                    requirement: ["Map"],
+                    claim: "Crystal",
+                    access: false,
+                    directions: [
+                        { name: "right", value: 1 },
+                        { name: "up", value: -1 },
+                    ]
+                },
+
+                {
+                    id: 8,
+                    room: "Storage",
+                    requirement: ["Map"],
+                    claim: null,
+                    access: false,
+                    directions: [
+                        { name: "right", value: 1 },
+                        { name: "left", value: -1 },
+                    ]
+                },
+                {
+                    id: 9,
+                    room: "Hallway",
+                    requirement: ["Map", "Torch"],
+                    claim: null,
+                    access: false,
+                    directions: [
+                        { name: "right", value: 1 },
+                        { name: "left", value: -1 },
+                    ]
+                },
+
+                {
+                    id: 10,
+                    room: "TreasureRoom",
+                    requirement: ["GoldenKey"],
+                    claim: null,
+                    access: false,
+                    directions: [
+                        { name: null, value: null },
+                        { name: null, value: null },
+                    ]
+
+                },
+            ],
+
+            item: [
+                {
+                    id: 1,
+                    name: "Map",
+                    upgradeable: false,
+                    require: null,
+                    power: null
+                },
+
+                {
+                    id: 2,
+                    name: "SilverKey",
+                    upgradeable: true,
+                    require: "Crystal",
+                    power: null,
+                },
+
+                {
+                    id: 3,
+                    name: "Portion",
+                    upgradeable: false,
+                    require: null,
+                    power: null
+                },
+
+                {
+                    id: 4,
+                    name: "Torch",
+                    upgradeable: false,
+                    require: null,
+                    power: null
+                },
+
+                {
+                    id: 5,
+                    name: "Crystal",
+                    upgradeable: true,
+                    require: "SilverKey",
+                    power: null
+                },
+
+                {
+                    id: 6,
+                    name: "GoldenKey",
+                    upgradeable: false,
+                    require: ["SilverKey", "Crystal"],
+                    power: null
+                },
+
+
+            ],
+
+            backpack: {
+                items: [],
+                size: 4,
+                currentSize: function () {
+                    return this.items.length;
+                },
+            },
+            currentLvl: 0,
+            nextLvl: function () { return this.currentLvl = this.currentLvl + 1 },
+            prevLvl: function () { return this.currentLvl != 0 ? this.currentLvl = this.currentLvl-- : 0 },
+            lvl: function () { return this.currentLvl }
+        }
+
+        let gameover = false;
+
+        // function start(data, lvl, curr, bp) {
+        while (!gameover) {
+            let msg = '';
+            let take = '';
+            let craft = 0;
+
+            b(`You are now in ${game.levels[game.currentLvl].room} \n You found  ${game.levels[game.currentLvl].claim}`);
+            inventory(game.backpack);
+
+            take = a(`Do you want to pick up ${game.levels[game.currentLvl].claim} ? \n Press 1 to pick up or Press Other Key To Decline`);
+
+            if (take == 1) {
+                pick(game, game.backpack, game.levels[game.currentLvl].claim);
+            }
+
+            craft = a("Press 1 to craft an item or Press Other Keys to continue");
+            if(craft == 1){
+                make(game,game.backpack.items);
+            }
+            while (msg != 1 && msg != 2) {
+                msg = a("Press 1 to check your inventory \n Press 2 to Continue");
+                msg == 1 ? inventory(game.backpack) : stages(game, game.levels, game.currentLvl);
+                if (msg == 2) {
+                    access(game.backpack, game.levels, game.currentLvl);
+                }
+            }
+            // console.log(game.levels[game.currentLvl].access);
+
+            if (game.levels[game.currentLvl].access != true) {
+                game.currentLvl = game.currentLvl - 1;
+                console.log(game.currentLvl);
+            }
+        }
+        // }
+        function stages(data, lvl, curr) {
+
+            let msg = '';
+            b(`You can move ${lvl[curr].directions[0].name} or ${lvl[curr].directions[1].name}`);
+
+            while (msg > 2 || msg == 0 || msg == undefined) {
+                msg = a(`Press 1 to move ${lvl[curr].directions[0].name} or Press 2 to move         ${lvl[curr].directions[1].name}`);
+
+                switch (+msg) {
+
+                    case 1:
+                        lvl[curr].directions[0].value == 1 ? game.nextLvl() : game.prevLvl();
+                        console.log(lvl[curr].room);
+                        // console.log(msg);
+                        break;
+
+                    case 2:
+                        lvl[curr].directions[1].value == 1 ? game.nextLvl() : game.prevLvl();
+                        console.log(lvl[curr].room);
+                        console.log(msg);
+                        break;
+
+                    default:
+                        b("Please Enter a valid number");
+                        break;
+                }
+            }
+        }
+
+        function inventory(bp) {
+
+            if (bp.items.length === 0) {
+                b(`Your Items : [] \n Max Capacity  :  + ${bp.size}  \n Slot Left :  ${(bp.size - bp.currentSize())}`);
+            }
+            else {
+                b(`Your Items : ${bp.items.map((item) => item.name)} \n Max Capacity  : ${bp.size}  \n Slot Left :  ${(bp.size - bp.currentSize())}`)
+            }
+        }
+
+        function pick(data, bp, req) {
+
+            if (bp.currentSize() < bp.size && data.levels[data.currentLvl].claim != null) {
+                bp.items.push(data.item.find(item => item.name == req));
+            }
+            else if(bp.currentSize() >= bp.size) {
+                fixSize(bp);
+                bp.items.push(data.item.find(item => item.name == req));
+            }
+        }
+
+        function fixSize(bp) {
+
+            let msg = '';
+
+            while (bp.currentSize() >= bp.size) {
+                b("You no longer have enough slot \n You need to remove some items");
+                msg = a(`Press 1 for Remove ${bp.items[0].name} \n Press 2 for Remove ${bp.items[1].name} \n Press 3 for Remove ${bp.items[2].name} \n Press 4 for Remove ${bp.items[3].name}`);
+                switch (+msg) {
+                    case 1:
+                        b(`You Removed ${bp.items[0].name}`);
+                        bp.items = bp.items.filter((item, idx) => idx != 0);
+                        inventory(bp);
+                        break;
+
+                    case 2:
+                        b(`You Removed ${bp.items[1].name}`);
+                        bp.items = bp.items.filter((item, idx) => idx != 1);
+                        inventory(bp);
+                        break;
+
+                    case 3:
+                        b(`You Removed ${bp.items[2].name}`);
+                        bp.items = bp.items.filter((item, idx) => idx != 2);
+                        inventory(bp);
+                        break;
+
+                    case 4:
+                        b(`You Removed ${bp.items[3].name}`);
+                        bp.items = bp.items.filter((item, idx) => idx != 3);
+                        inventory(bp);
+                        break;
+
+                    default:
+                        b("Enter a valid number");
+                        break;
+                }
+            }
+        }
+
+        function access(bp, lvl, curr) {
+            let msg = '';
+            let check = false;
+
+            if (bp.items.length > 0) {
+                let item = bp.items.map(item => item.name);
+                console.log(item);
+                item.forEach(i => {
+                    if (lvl[curr].requirement.includes(i)) {
+                        ;
+                        check = true;
+                        console.log(check);
+                    }
+                });
+            }
+            console.log(check);
+            if (!check) {
+                while (msg.toLowerCase() != "y") {
+                    b(`You need ${lvl[curr].requirement.map(item => item)} for  Enter               ${lvl[curr].room}`);
+                    msg = a("Press y to go back").toLowerCase();
+                }
+            } else {
+                lvl[curr].access = true;
+            }
+        }
+
+        function upgradeItem(items) {
+            let data = items.filter((item) => item.upgradeable == true);
+            return data;
+        }
+
+        function build(data, items) {
+
+            let receipe = data(items)
+            let craft = receipe.map(items => items.require);
+            if (craft.includes("SilverKey") && craft.includes("Crystal")) {
+                return 1;
+            }
+
+            return 0;
+        }
+
+        function make(data, items) {
+
+            if (build(upgradeItem, items)) {
+
+                let item = items.filter(item => item.name != "Crystal");
+                item = item.filter(item => item.name != "SilverKey");
+                console.log(item);
+                item.push(data.item.find(item => item.name == "GoldenKey"));
+                items = [...item];
+
+            } else {
+                b("You can't build an Item Yet");
+            }
+        }
+    </script>
+</body>
+
+</html>
