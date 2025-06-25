@@ -114,7 +114,7 @@
                 {
                     id: 9,
                     room: "Hallway",
-                    requirement: ["Map", "Torch"],
+                    requirement: ["Torch"],
                     claim: null,
                     access: false,
                     directions: [
@@ -198,7 +198,7 @@
             },
             currentLvl: 0,
             nextLvl: function () { return this.currentLvl = this.currentLvl + 1 },
-            prevLvl: function () { return this.currentLvl != 0 ? this.currentLvl = this.currentLvl-- : 0 },
+            prevLvl: function () { return this.currentLvl != 0 ? this.currentLvl = this.currentLvl-1 : 0 },
             lvl: function () { return this.currentLvl }
         }
 
@@ -235,6 +235,11 @@
             if (game.levels[game.currentLvl].access != true) {
                 game.currentLvl = game.currentLvl - 1;
                 console.log(game.currentLvl);
+            }
+
+            if(game.levels[9].access == true){
+                b("You Won The Game congratulation");
+                gameover = true;
             }
         }
         // }
@@ -371,15 +376,19 @@
 
         function make(data, items) {
 
-            if (build(upgradeItem, items)) {
+                console.log(game.backpack.items);
 
-                let item = items.filter(item => item.name != "Crystal");
+            if (build(upgradeItem, items)) {
+                console.log(game.backpack.items);
+                let item = game.backpack.items.filter(item => item.name != "Crystal");
                 item = item.filter(item => item.name != "SilverKey");
                 console.log(item);
                 item.push(data.item.find(item => item.name == "GoldenKey"));
-                items = [...item];
-
+                console.log(item);
+                game.backpack.items = [...item];
+                // inventory(data.backpack);
             } else {
+                console.log(game.backpack.items);
                 b("You can't build an Item Yet");
             }
         }
