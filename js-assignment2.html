@@ -198,7 +198,7 @@
             },
             currentLvl: 0,
             nextLvl: function () { return this.currentLvl = this.currentLvl + 1 },
-            prevLvl: function () { return this.currentLvl != 0 ? this.currentLvl = this.currentLvl-1 : 0 },
+            prevLvl: function () { return this.currentLvl != 0 ? this.currentLvl = this.currentLvl - 1 : 0 },
             lvl: function () { return this.currentLvl }
         }
 
@@ -220,8 +220,8 @@
             }
 
             craft = a("Press 1 to craft an item or Press Other Keys to continue");
-            if(craft == 1){
-                make(game,game.backpack.items);
+            if (craft == 1) {
+                make(game, game.backpack.items);
             }
             while (msg != 1 && msg != 2) {
                 msg = a("Press 1 to check your inventory \n Press 2 to Continue");
@@ -237,7 +237,7 @@
                 console.log(game.currentLvl);
             }
 
-            if(game.levels[9].access == true){
+            if (game.levels[9].access == true) {
                 b("You Won The Game congratulation");
                 gameover = true;
             }
@@ -284,12 +284,15 @@
 
         function pick(data, bp, req) {
 
-            if (bp.currentSize() < bp.size && data.levels[data.currentLvl].claim != null) {
-                bp.items.push(data.item.find(item => item.name == req));
-            }
-            else if(bp.currentSize() >= bp.size) {
-                fixSize(bp);
-                bp.items.push(data.item.find(item => item.name == req));
+            if (data.levels[data.currentLvl].claim != null) {
+                if (bp.currentSize() < bp.size) {
+                    bp.items.push(data.item.find(item => item.name == req));
+
+                }
+                else {
+                    fixSize(bp);
+                    bp.items.push(data.item.find(item => item.name == req));
+                }
             }
         }
 
@@ -376,7 +379,7 @@
 
         function make(data, items) {
 
-                console.log(game.backpack.items);
+            console.log(game.backpack.items);
 
             if (build(upgradeItem, items)) {
                 console.log(game.backpack.items);
